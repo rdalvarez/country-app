@@ -10,12 +10,25 @@ import { Country } from '../../interfaces/country';
 export class ByCapitalPageComponent {
   public countries: Country[] = [];
 
-  constructor(private countriesService: CountriesService) {}
+  constructor(private countriesService: CountriesService) {
+    this.loadLocalStorage();
+  }
 
   searchByCapital(term: string) {
     this.countriesService.searchByCapital(term)
     .subscribe((countries) => {
       this.countries = countries;
+      this.saveLocalStorage(countries)
     });
   }
+
+  saveLocalStorage(data: Country[]){
+    localStorage.setItem('historyByCapital', JSON.stringify(data));
+  }
+
+  loadLocalStorage(){
+    if (!localStorage.getItem('historyByCapital')) return;
+    this.countries = JSON.parse(localStorage.getItem('historyByCapital')!) || [];
+  }
+
 }
