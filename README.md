@@ -14,6 +14,6 @@
 12. Utilizacion de Router Module, RouterLink, RouterLinkOptions, Observables y peticiones HTTP [RestCountries](https://restcountries.com/)
     
 ## Deploys
-(github-pages)[https://rdalvarez.github.io/country-app/]
+[github-pages](https://rdalvarez.github.io/country-app/)
 
 
