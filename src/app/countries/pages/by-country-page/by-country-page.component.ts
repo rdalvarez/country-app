@@ -9,25 +9,28 @@ import { Country } from '../../interfaces/country';
 })
 export class ByCountryPageComponent {
   public countries: Country[] = [];
+  public term: string = '';
 
   constructor(private countriesService: CountriesService) {
     this.loadLocalStorage();
   }
 
   searchByCountry(term: string) {
+    this.saveLocalStorage(term);
     this.countriesService.searchCountry(term).subscribe((countries) => {
       this.countries = countries;
-      this.saveLocalStorage(countries)
     });
   }
 
-  saveLocalStorage(data: Country[]){
-    localStorage.setItem('historyByCountry', JSON.stringify(data));
+  saveLocalStorage(term: string) {
+    localStorage.setItem('historyByCountry', term);
   }
 
-  loadLocalStorage(){
+  loadLocalStorage() {
     if (!localStorage.getItem('historyByCountry')) return;
-    this.countries = JSON.parse(localStorage.getItem('historyByCountry')!) || [];
+    const term = localStorage.getItem('historyByCountry')! || '';
+    if (term === '') return;
+    this.searchByCountry(term);
+    this.term = term;
   }
-
 }

@@ -9,25 +9,29 @@ import { CountriesService } from '../../services/countries.service';
 })
 export class ByRegionPageComponent {
   public countries: Country[] = [];
+  public term: string = ''
 
   constructor(private countriesService: CountriesService) {
     this.loadLocalStorage();
   }
 
   searchByRegion(term: string) {
+    this.saveLocalStorage(term);
     this.countriesService.searchRegion(term)
     .subscribe((countries) => {
       this.countries = countries;
-      this.saveLocalStorage(countries);
     });
   }
 
-  saveLocalStorage(data: Country[]){
-    localStorage.setItem('historyByRegion', JSON.stringify(data));
+  saveLocalStorage(term: string){
+    localStorage.setItem('historyByRegion', term);
   }
 
   loadLocalStorage(){
     if (!localStorage.getItem('historyByRegion')) return;
-    this.countries = JSON.parse(localStorage.getItem('historyByRegion')!) || [];
+    const term = localStorage.getItem('historyByRegion')! || '';
+    if (term === '') return;
+    this.searchByRegion(term);
+    this.term = term;
   }
 }

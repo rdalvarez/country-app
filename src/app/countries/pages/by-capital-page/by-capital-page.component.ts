@@ -9,26 +9,30 @@ import { Country } from '../../interfaces/country';
 })
 export class ByCapitalPageComponent {
   public countries: Country[] = [];
+  public term: string = '';
 
   constructor(private countriesService: CountriesService) {
     this.loadLocalStorage();
   }
 
   searchByCapital(term: string) {
+    this.saveLocalStorage(term);
     this.countriesService.searchByCapital(term)
     .subscribe((countries) => {
       this.countries = countries;
-      this.saveLocalStorage(countries)
     });
   }
 
-  saveLocalStorage(data: Country[]){
-    localStorage.setItem('historyByCapital', JSON.stringify(data));
+  saveLocalStorage(term: string) {
+    localStorage.setItem('historyByCapital', term);
   }
 
-  loadLocalStorage(){
+  loadLocalStorage() {
     if (!localStorage.getItem('historyByCapital')) return;
-    this.countries = JSON.parse(localStorage.getItem('historyByCapital')!) || [];
+    const term = localStorage.getItem('historyByCapital')! || '';
+    if (term === '') return;
+    this.searchByCapital(term);
+    this.term = term;
   }
 
 }
