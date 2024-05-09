@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CountriesService } from '../../services/countries.service';
 import { Country } from '../../interfaces/country.interface';
 
@@ -7,30 +7,22 @@ import { Country } from '../../interfaces/country.interface';
   templateUrl: './by-country-page.component.html',
   styles: [],
 })
-export class ByCountryPageComponent {
+export class ByCountryPageComponent implements OnInit{
   public countries: Country[] = [];
-  public term: string = '';
+  public initialValue: string = '';
 
-  constructor(private countriesService: CountriesService) {
-    this.loadLocalStorage();
+  constructor(private countriesService: CountriesService) { }
+
+  ngOnInit(): void {
+    this.countries = this.countriesService.cacheStore.byCountries.countries;
+    this.initialValue = this.countriesService.cacheStore.byCountries.term;
   }
 
   searchByCountry(term: string) {
-    this.saveLocalStorage(term);
     this.countriesService.searchCountry(term).subscribe((countries) => {
       this.countries = countries;
     });
   }
 
-  saveLocalStorage(term: string) {
-    localStorage.setItem('historyByCountry', term);
-  }
 
-  loadLocalStorage() {
-    if (!localStorage.getItem('historyByCountry')) return;
-    const term = localStorage.getItem('historyByCountry')! || '';
-    if (term === '') return;
-    this.searchByCountry(term);
-    this.term = term;
-  }
 }
